@@ -1,0 +1,52 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  button {
+    font: inherit;
+  }
+  
+  .app {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0;
+  }
+  
+  .header__title {
+    margin: 0;
+  }
+  
+  .header__controls {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .button {
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+  }
+  
+  .stats__item {
+    margin: 0 0 24px;
+  }
+  
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }

@@ -1,3 +1,72 @@
+const cardData = [
+    { id: 1, image: './assets/images/card-1.webp', label: "0 == '0'" },
+    { id: 2, image: './assets/images/card-2.webp', label: '[] == ![]' },
+    { id: 3, image: './assets/images/card-3.webp', label: 'NaN === NaN' },
+    { id: 4, image: './assets/images/card-4.webp', label: 'typeof null' },
+    { id: 5, image: './assets/images/card-5.webp', label: 'true + false' },
+    { id: 6, image: './assets/images/card-6.webp', label: '[] + {}' },
+    { id: 7, image: './assets/images/card-7.webp', label: "9 + '1'" },
+    { id: 8, image: './assets/images/card-8.webp', label: 'null == undefined' },
+  ];
+  
+  const cardBackImage = './assets/images/card-back.webp';
+
+  function createDeck() {
+    return [...cardData, ...cardData].map((card, index) => ({
+      ...card,
+      instanceId: index,
+    }));
+  }
+
+  function shuffleDeck(deck) {
+    const shuffledDeck = [...deck];
+  
+    for (let i = shuffledDeck.length - 1; i > 0; i -= 1) {
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+  
+      [shuffledDeck[i], shuffledDeck[randomIndex]] = [
+        shuffledDeck[randomIndex],
+        shuffledDeck[i],
+      ];
+    }
+  
+    return shuffledDeck;
+  }
+
+  function createCard(cardDataItem) {
+    const card = document.createElement('button');
+    card.classList.add('card');
+    card.type = 'button';
+    card.dataset.cardId = cardDataItem.id;
+    card.dataset.instanceId = cardDataItem.instanceId;
+    card.setAttribute('aria-label', `Memory card: ${cardDataItem.label}`);
+  
+    const cardInner = document.createElement('span');
+    cardInner.classList.add('card__inner');
+  
+    const cardFront = document.createElement('span');
+    cardFront.classList.add('card__face', 'card__front');
+  
+    const frontImage = document.createElement('img');
+    frontImage.src = cardBackImage;
+    frontImage.alt = '';
+  
+    const cardBack = document.createElement('span');
+    cardBack.classList.add('card__face', 'card__back');
+  
+    const backImage = document.createElement('img');
+    backImage.src = cardDataItem.image;
+    backImage.alt = cardDataItem.label;
+  
+    cardFront.append(frontImage);
+    cardBack.append(backImage);
+  
+    cardInner.append(cardFront, cardBack);
+    card.append(cardInner);
+  
+    return card;
+  }
+
 const app = document.createElement('div');
 app.classList.add('app');
 
@@ -42,6 +111,17 @@ stats.append(moves, pairs);
 
 const board = document.createElement('div');
 board.classList.add('game-board');
+
+function renderCards(deck) {
+    deck.forEach((cardDataItem) => {
+      const card = createCard(cardDataItem);
+      board.append(card);
+    });
+  }
+
+  
+  const deck = shuffleDeck(createDeck());
+  renderCards(deck);
 
 main.append(stats, board);
 app.append(header, main);

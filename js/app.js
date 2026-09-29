@@ -92,6 +92,7 @@ const newGameButton = document.createElement('button');
 newGameButton.classList.add('button');
 newGameButton.type = 'button';
 newGameButton.textContent = 'New Game';
+newGameButton.addEventListener('click', startNewGame);
 
 const leaderboardButton = document.createElement('button');
 leaderboardButton.classList.add('button');
@@ -206,10 +207,31 @@ function handleCardClick(event) {
   checkForMatch();
 }
 
-const deck = shuffleDeck(createDeck());
-renderCards(deck);
+function startNewGame() {
+  if (mismatchTimeout !== null) {
+    clearTimeout(mismatchTimeout);
+    mismatchTimeout = null;
+  }
+
+  firstCard = null;
+  secondCard = null;
+  movesCount = 0;
+  matchedPairs = 0;
+  isBoardLocked = false;
+  isGameFinished = false;
+
+  updateCounters();
+
+  board.replaceChildren();
+
+  const deck = shuffleDeck(createDeck());
+  renderCards(deck);
+}
+
 
 main.append(stats, board);
 app.append(header, main);
 
 document.body.prepend(app);
+
+startNewGame();

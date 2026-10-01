@@ -153,6 +153,10 @@ function handleMatch() {
   matchedPairs += 1;
   updateCounters();
   resetSelection();
+
+  if (matchedPairs === 8) {
+    finishGame();
+  }
 }
 
 function handleMismatch() {
@@ -208,6 +212,7 @@ function handleCardClick(event) {
 }
 
 function startNewGame() {
+  closeModal();
   if (mismatchTimeout !== null) {
     clearTimeout(mismatchTimeout);
     mismatchTimeout = null;
@@ -235,3 +240,89 @@ app.append(header, main);
 document.body.prepend(app);
 
 startNewGame();
+
+function closeModal() {
+  const modalOverlay = document.querySelector('.modal-overlay');
+
+  if (!modalOverlay) {
+    return;
+  }
+
+  modalOverlay.remove();
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', handleModalKeydown);
+}
+
+function handleModalKeydown(event) {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+}
+
+function openModal(content) {
+  closeModal();
+
+  const modalOverlay = document.createElement('div');
+  modalOverlay.classList.add('modal-overlay');
+
+  const modal = document.createElement('div');
+  modal.classList.add('modal');
+
+  modal.append(content);
+  modalOverlay.append(modal);
+
+  modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) {
+      closeModal();
+    }
+  });
+
+  document.body.append(modalOverlay);
+  document.body.classList.add('modal-open');
+
+  document.addEventListener('keydown', handleModalKeydown);
+}
+
+function createVictoryContent() {
+  const content = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.classList.add('modal__title');
+  title.textContent = 'You Win!';
+
+  const text = document.createElement('p');
+  text.classList.add('modal__text');
+  text.textContent = `Moves: ${movesCount}`;
+
+  const actions = document.createElement('div');
+  actions.classList.add('modal__actions');
+
+  const newGameModalButton = document.createElement('button');
+  newGameModalButton.classList.add('button');
+  newGameModalButton.type = 'button';
+  newGameModalButton.textContent = 'New Game';
+
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('button');
+  closeButton.type = 'button';
+  closeButton.textContent = 'Close';
+
+  newGameModalButton.addEventListener('click', () => {
+    closeModal();
+    startNewGame();
+  });
+
+  closeButton.addEventListener('click', closeModal);
+
+  actions.append(newGameModalButton, closeButton);
+  content.append(title, text, actions);
+
+  return content;
+}
+
+function finishGame() {
+  isGameFinished = true;
+
+  const victoryContent = createVictoryContent();
+  openModal(victoryContent);
+}

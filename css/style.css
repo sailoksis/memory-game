@@ -1,0 +1,149 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  button {
+    font: inherit;
+  }
+  
+  .app {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0;
+  }
+  
+  .header__title {
+    margin: 0;
+  }
+  
+  .header__controls {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .button {
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+  }
+  
+  .stats__item {
+    margin: 0 0 24px;
+  }
+  
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: min(100%, 700px);
+    margin: 0 auto;
+  }
+  .card {
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+  
+  .card__inner {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+  }
+  
+  .card__face {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: 12px;
+    backface-visibility: hidden;
+  }
+  
+  .card__face img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .card__back {
+    transform: rotateY(180deg);
+  }
+  
+  .card--flipped .card__inner {
+    transform: rotateY(180deg);
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgb(0 0 0 / 60%);
+  }
+  
+  .modal {
+    width: min(100%, 420px);
+    padding: 32px;
+    border-radius: 16px;
+    background: #ffffff;
+    text-align: center;
+  }
+  
+  .modal__title {
+    margin: 0 0 16px;
+  }
+  
+  .modal__text {
+    margin: 0 0 24px;
+  }
+  
+  .modal__actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .leaderboard {
+    margin-bottom: 24px;
+  }
+  
+  .leaderboard__row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+  }
+  
+  .leaderboard__header {
+    font-weight: 700;
+  }

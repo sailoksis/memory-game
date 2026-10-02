@@ -130,3 +130,20 @@ body {
     justify-content: center;
     gap: 12px;
   }
+
+  .leaderboard {
+    margin-bottom: 24px;
+  }
+  
+  .leaderboard__row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+  }
+  
+  .leaderboard__header {
+    font-weight: 700;
+  }

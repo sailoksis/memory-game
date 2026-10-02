@@ -10,6 +10,7 @@ const cardData = [
 ];
 
 const cardBackImage = './assets/images/card-back.webp';
+const leaderboardStorageKey = 'memoryGameLeaderboard';
 
 let firstCard = null;
 let secondCard = null;
@@ -98,6 +99,8 @@ const leaderboardButton = document.createElement('button');
 leaderboardButton.classList.add('button');
 leaderboardButton.type = 'button';
 leaderboardButton.textContent = 'Leaderboard';
+
+leaderboardButton.addEventListener('click', openLeaderboard);
 
 controls.append(newGameButton, leaderboardButton);
 header.append(title, controls);
@@ -233,6 +236,129 @@ function startNewGame() {
   renderCards(deck);
 }
 
+function getResults() {
+  const storedResults = localStorage.getItem(leaderboardStorageKey);
+
+  if (!storedResults) {
+    return [];
+  }
+
+  return JSON.parse(storedResults);
+}
+
+function formatDate(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return `${day}.${month}.${year}`;
+}
+
+function saveResult() {
+  const now = new Date();
+
+  const result = {
+    moves: movesCount,
+    date: formatDate(now),
+    timestamp: now.getTime(),
+  };
+
+  const results = getResults();
+
+  results.push(result);
+
+  results.sort((a, b) => {
+    if (a.moves !== b.moves) {
+      return a.moves - b.moves;
+    }
+
+    return a.timestamp - b.timestamp;
+  });
+
+  const topResults = results.slice(0, 10);
+
+  localStorage.setItem(
+    leaderboardStorageKey,
+    JSON.stringify(topResults)
+  );
+}
+
+function createLeaderboardContent() {
+  const content = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.classList.add('modal__title');
+  title.textContent = 'Leaderboard';
+
+  const results = getResults();
+
+  content.append(title);
+
+  if (results.length === 0) {
+    const emptyMessage = document.createElement('p');
+    emptyMessage.classList.add('modal__text');
+    emptyMessage.textContent = 'No results yet';
+
+    content.append(emptyMessage);
+  } else {
+    const leaderboard = document.createElement('div');
+    leaderboard.classList.add('leaderboard');
+
+    const header = document.createElement('div');
+    header.classList.add('leaderboard__row', 'leaderboard__header');
+
+    const placeHeader = document.createElement('span');
+    placeHeader.textContent = '#';
+
+    const movesHeader = document.createElement('span');
+    movesHeader.textContent = 'Moves';
+
+    const dateHeader = document.createElement('span');
+    dateHeader.textContent = 'Date';
+
+    header.append(placeHeader, movesHeader, dateHeader);
+    leaderboard.append(header);
+
+    results.forEach((result, index) => {
+      const row = document.createElement('div');
+      row.classList.add('leaderboard__row');
+
+      const place = document.createElement('span');
+      place.textContent = String(index + 1);
+
+      const movesValue = document.createElement('span');
+      movesValue.textContent = String(result.moves);
+
+      const date = document.createElement('span');
+      date.textContent = result.date;
+
+      row.append(place, movesValue, date);
+      leaderboard.append(row);
+    });
+
+    content.append(leaderboard);
+  }
+
+  const actions = document.createElement('div');
+  actions.classList.add('modal__actions');
+
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('button');
+  closeButton.type = 'button';
+  closeButton.textContent = 'Close';
+
+  closeButton.addEventListener('click', closeModal);
+
+  actions.append(closeButton);
+  content.append(actions);
+
+  return content;
+}
+
+function openLeaderboard() {
+  const leaderboardContent = createLeaderboardContent();
+  openModal(leaderboardContent);
+}
 
 main.append(stats, board);
 app.append(header, main);
@@ -307,10 +433,7 @@ function createVictoryContent() {
   closeButton.type = 'button';
   closeButton.textContent = 'Close';
 
-  newGameModalButton.addEventListener('click', () => {
-    closeModal();
-    startNewGame();
-  });
+  newGameModalButton.addEventListener('click', startNewGame);
 
   closeButton.addEventListener('click', closeModal);
 
@@ -322,6 +445,8 @@ function createVictoryContent() {
 
 function finishGame() {
   isGameFinished = true;
+
+  saveResult();
 
   const victoryContent = createVictoryContent();
   openModal(victoryContent);

@@ -375,6 +375,8 @@ function closeModal() {
   }
 
   modalOverlay.remove();
+
+  app.inert = false;
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', handleModalKeydown);
 }
@@ -393,6 +395,8 @@ function openModal(content) {
 
   const modal = document.createElement('div');
   modal.classList.add('modal');
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
 
   modal.append(content);
   modalOverlay.append(modal);
@@ -404,9 +408,17 @@ function openModal(content) {
   });
 
   document.body.append(modalOverlay);
+
+  app.inert = true;
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', handleModalKeydown);
+
+  const firstButton = modal.querySelector('button');
+
+  if (firstButton) {
+    firstButton.focus();
+  }
 }
 
 function createVictoryContent() {
